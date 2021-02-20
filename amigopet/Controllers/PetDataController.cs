@@ -102,7 +102,9 @@ namespace amigopet.Controllers
                     AppointmentID = Appointment.AppointmentID,
                     AppointmentTime = Appointment.AppointmentTime,
                     AppointmentNote = Appointment.AppointmentNote,
-                    PetID = Appointment.PetID
+                    PetID = Appointment.PetID,
+                    PetWalkerID = Appointment.PetWalkerID
+
                 };
                 AppointmentDtos.Add(NewAppointment);
             }
@@ -135,6 +137,100 @@ namespace amigopet.Controllers
 
             return Ok(Pet.PetID);
         }
+
+        /// <summary>
+        /// Updates a Pet in the database given information about the Pet.
+        /// </summary>
+        /// <param name="id">The Pet id</param>
+        /// <param name="Team">A Pet object. Received as POST data.</param>
+        /// <returns></returns>
+        /// <example>
+        /// POST: api/TeamData/UpdatePet/5
+        /// FORM DATA: Pet JSON Object
+        /// </example>
+        [ResponseType(typeof(void))]
+        [HttpPost]
+        public IHttpActionResult UpdatePet(int id, [FromBody] Pet Pet)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != Pet.PetID)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(Pet).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PetExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+       
+
+        /// <summary>
+        /// Deletes a pet in the database
+        /// </summary>
+        /// <param name="id">The id of the pet to delete.</param>
+        /// <returns>200 if successful. 404 if not successful.</returns>
+        /// <example>
+        /// POST: api/PetData/DeletePet/5
+        /// </example>
+        [HttpPost]
+        public IHttpActionResult DeletePet(int id)
+        {
+            Pet Pet = db.Pets.Find(id);
+            if (Pet == null)
+            {
+                return NotFound();
+            }
+            
+            db.Pets.Remove(Pet);
+            db.SaveChanges();
+
+            return Ok();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// Finds a pet in the system. Internal use only.
+        /// </summary>
+        /// <param name="id">The pet id</param>
+        /// <returns>TRUE if the pet exists, false otherwise.</returns>
+        private bool PetExists(int id)
+        {
+            return db.Pets.Count(e => e.PetID == id) > 0;
+        }
+
+
+
+
+
 
 
 

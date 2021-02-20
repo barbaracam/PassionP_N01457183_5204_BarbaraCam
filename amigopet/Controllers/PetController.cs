@@ -126,45 +126,106 @@ namespace amigopet.Controllers
         // GET: Pet/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            string url = "PetData/FindPet/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
+            {
+                //Put data into Team data transfer object
+                PetDto SelectedPet = response.Content.ReadAsAsync<PetDto>().Result;
+                return View(SelectedPet);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
         // POST: Pet/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        [ValidateAntiForgeryToken()]
+        public ActionResult Edit(int id, Pet PetInfo)
         {
-            try
-            {
-                // TODO: Add update logic here
+            Debug.WriteLine(PetInfo.PetName);
+            Debug.WriteLine(PetInfo.PetBreed);
+            Debug.WriteLine(PetInfo.PetTip); 
+            string url = "PetData/UpdatePet/" + id;
+            Debug.WriteLine(jss.Serialize(PetInfo));
+            HttpContent content = new StringContent(jss.Serialize(PetInfo));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
 
-                return RedirectToAction("Index");
-            }
-            catch
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("Details", new { id = id });
+            }
+            else
+            {
+                return RedirectToAction("Error");
             }
         }
 
         // GET: Pet/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet]
+        public ActionResult DeleteConfirm(int id)
         {
-            return View();
+            string url = "Petdata/FindPet/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
+            {
+                //Put data into pet data transfer object
+                PetDto SelectedPet = response.Content.ReadAsAsync<PetDto>().Result;
+                return View(SelectedPet);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
         // POST: Pet/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [ValidateAntiForgeryToken()]
+        public ActionResult Delete(int id)
         {
-            try
+            string url = "Petdata/DeletePet/" + id;
+            //post body is empty
+            HttpContent content = new StringContent("");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
             {
-                // TODO: Add delete logic here
 
-                return RedirectToAction("Index");
+                return RedirectToAction("List");
             }
-            catch
+            else
             {
-                return View();
+                return RedirectToAction("Error");
             }
         }
+
+        public ActionResult Error()
+        {
+            return View();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

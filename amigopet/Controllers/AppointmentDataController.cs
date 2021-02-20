@@ -165,6 +165,93 @@ namespace amigopet.Controllers
             return Ok(Appointment.AppointmentID);
         }
 
+        /// <summary>
+        /// Updates a Appointment in the database given information about the Appointment.
+        /// </summary>
+        /// <param name="id">The Appointment id</param>
+        /// <param name="Team">An Appointment object. Received as POST data.</param>
+        /// <returns></returns>
+        /// <example>
+        /// POST: api/AppointmentData/UpdateAppointment/5
+        /// FORM DATA: Appointment JSON Object
+        /// </example>
+        [ResponseType(typeof(void))]
+        [HttpPost]
+        public IHttpActionResult UpdateAppointment(int id, [FromBody] Appointment Appointment)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != Appointment.AppointmentID)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(Appointment).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AppointmentExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+
+        /// <summary>
+        /// Deletes an appointment in the database
+        /// </summary>
+        /// <param name="id">The id of the appointment to delete.</param>
+        /// <returns>200 if successful. 404 if not successful.</returns>
+        /// <example>
+        /// POST: api/AppointmentData/DeleteAppointment/5
+        /// </example>
+        [HttpPost]
+        public IHttpActionResult DeleteAppointment(int id)
+        {
+            Appointment Appointment = db.Appointments.Find(id);
+            if (Appointment == null)
+            {
+                return NotFound();
+            }
+            
+            db.Appointments.Remove(Appointment);
+            db.SaveChanges();
+
+            return Ok();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// Finds a appointment in the system. Internal use only.
+        /// </summary>
+        /// <param name="id">The appointment id</param>
+        /// <returns>TRUE if the appointment exists, false otherwise.</returns>
+        private bool AppointmentExists(int id)
+        {
+            return db.Appointments.Count(e => e.AppointmentID == id) > 0;
+        }
 
 
 

@@ -16,9 +16,8 @@ namespace amigopet.Models
         public string PetName { get; set; }
         public string PetBreed { get; set; }
         public string PetTip { get; set; }
-
-        
-     }
+        public string PicExtension { get; internal set; }
+    }
 
     //This class can be used to transfer information about a pet, vessell of communication
     public class PetDto

@@ -187,6 +187,8 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PetController.cs" />
     <Compile Include="Controllers\PetDataController.cs" />
+    <Compile Include="Controllers\PetWalkerController.cs" />
+    <Compile Include="Controllers\PetWalkerDataController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -222,6 +224,10 @@
     <Compile Include="Migrations\202102190645117_addfixtable3.Designer.cs">
       <DependentUpon>202102190645117_addfixtable3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102201548530_part2.cs" />
+    <Compile Include="Migrations\202102201548530_part2.Designer.cs">
+      <DependentUpon>202102201548530_part2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Appointment.cs" />
@@ -232,6 +238,7 @@
     <Compile Include="Models\ViewModels\ShowAppointment.cs" />
     <Compile Include="Models\ViewModels\ShowPet.cs" />
     <Compile Include="Models\ViewModels\UpdatePet.cs" />
+    <Compile Include="Models\ViewModels\UpdatePetWalker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -295,6 +302,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Appointment\" />
+    <Folder Include="Views\PetWalker\" />
     <Folder Include="Views\Pet\" />
   </ItemGroup>
   <ItemGroup>
@@ -334,6 +342,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102190645117_addfixtable3.resx">
       <DependentUpon>202102190645117_addfixtable3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102201548530_part2.resx">
+      <DependentUpon>202102201548530_part2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

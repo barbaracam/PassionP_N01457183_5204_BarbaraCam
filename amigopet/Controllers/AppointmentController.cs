@@ -96,72 +96,92 @@ namespace amigopet.Controllers
         }
 
 
-             
-
-        // GET: Appointment/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Appointment/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Appointment/Edit/5
+        // GET: Team/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            string url = "AppointmentData/FindAppointment/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
+            {
+                //Put data into Team data transfer object
+                AppointmentDto SelectedAppointment = response.Content.ReadAsAsync<AppointmentDto>().Result;
+                return View(SelectedAppointment);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
         // POST: Appointment/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        [ValidateAntiForgeryToken()]
+        public ActionResult Edit(int id, Appointment AppointmentInfo)
         {
-            try
-            {
-                // TODO: Add update logic here
+            
+            string url = "AppointmentData/Appointment/" + id;
+            Debug.WriteLine(jss.Serialize(AppointmentInfo));
+            HttpContent content = new StringContent(jss.Serialize(AppointmentInfo));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
 
-                return RedirectToAction("Index");
-            }
-            catch
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("Details", new { id = id });
+            }
+            else
+            {
+                return RedirectToAction("Error");
             }
         }
 
         // GET: Appointment/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet]
+        public ActionResult DeleteConfirm(int id)
         {
-            return View();
+            string url = "AppointmentData/FindAppointment/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
+            {
+                //Put data into Team data transfer object
+                AppointmentDto SelectedAppointment = response.Content.ReadAsAsync<AppointmentDto>().Result;
+                return View(SelectedAppointment);
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
         }
 
         // POST: Appointment/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [ValidateAntiForgeryToken()]
+        public ActionResult Delete(int id)
         {
-            try
+            string url = "AppointmentData/DeleteAppointment/" + id;
+            //post body is empty
+            HttpContent content = new StringContent("");
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            //Can catch the status code (200 OK, 301 REDIRECT), etc.
+            //Debug.WriteLine(response.StatusCode);
+            if (response.IsSuccessStatusCode)
             {
-                // TODO: Add delete logic here
 
-                return RedirectToAction("Index");
+                return RedirectToAction("List");
             }
-            catch
+            else
             {
-                return View();
+                return RedirectToAction("Error");
             }
+        }
+
+        public ActionResult Error()
+        {
+            return View();
         }
     }
 }

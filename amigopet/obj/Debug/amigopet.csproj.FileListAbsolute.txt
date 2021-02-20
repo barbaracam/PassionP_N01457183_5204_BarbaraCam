@@ -121,3 +121,4 @@ C:\Users\camba\source\repos\amigopet\amigopet\obj\Debug\amigopet.Migrations.add_
 C:\Users\camba\source\repos\amigopet\amigopet\obj\Debug\amigopet.Migrations.addfixtables2.resources
 C:\Users\camba\source\repos\amigopet\amigopet\obj\Debug\amigopet.Migrations.addfixtable2.resources
 C:\Users\camba\source\repos\amigopet\amigopet\obj\Debug\amigopet.Migrations.addfixtable3.resources
+C:\Users\camba\source\repos\amigopet\amigopet\obj\Debug\amigopet.Migrations.part2.resources
